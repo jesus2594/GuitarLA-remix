@@ -4,8 +4,9 @@ import {
   Meta,
   Outlet,
   Scripts,
-  useCatch,
-  Link
+  Link,
+  useRouteError,
+  isRouteErrorResponse
  
 } from "@remix-run/react";
 
@@ -63,7 +64,7 @@ export default function App() {
 
 function Document({children}){
   return(
-    <html lang="en">
+    <html lang="es">
       <head>
        
         <Meta />
@@ -82,21 +83,26 @@ function Document({children}){
 }
 
 /**manejo de errores */
-export function CatchBoundary(){
-  const error = useCatch()
+/* export function CatchBoundary(){
+  const error = useRouteError()
+  
   return(
     <Document>
       <p className="error">{error.status} {error.statusText}</p>
       <Link className="error-enlace" to='/'>Tal vez quieras volver a la pagina principal</Link>
     </Document>
   )
-}
+} */
 
-export function ErrorBoundary({error}){
-  return(
-  <Document>
-      <p className="error">{error.status} {error.statusText}</p>
-      <Link className="error-enlace" to='/'>Tal vez quieras volver a la pagina principal</Link>
-    </Document>
-  )
+export function ErrorBoundary(){
+  const error = useRouteError()
+  if(isRouteErrorResponse(error)){
+    return(
+      <Document>
+          <p className="error">{error.status} {error.statusText}</p>
+          <Link className="error-enlace" to='/'>Tal vez quieras volver a la pagina principal</Link>
+        </Document>
+      )
+  }
+  
 }

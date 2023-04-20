@@ -1,9 +1,38 @@
-import React from 'react'
+import { useLoaderData } from "@remix-run/react";
+import { getGuitarras } from "~/models/guitarras.server";
+import { getPosts } from "~/models/posts.server";
+import ListadoGuitarras from "../components/listado-guitarras";
+import stylesGuitarras from '~/styles/guitarras.css'
 
-function Index() {
-  return (
-    <div>desde index</div>
-  )
+export function meta() {}
+export function links() {
+  return[
+    {
+      rel: 'stylesheet',
+      href: stylesGuitarras
+    }
+  ]
+}
+export async function loader() {
+  const [guitarras, posts] = await Promise.all([getGuitarras(), getPosts()]);
+  return {
+    guitarras: guitarras.data,
+    posts: posts.data,
+  };
 }
 
-export default Index
+function Index() {
+  const { guitarras, posts } = useLoaderData();
+
+  return (
+    <>
+      <main className="contenedor">
+       <ListadoGuitarras
+        guitarras={guitarras}
+       />
+      </main>
+    </>
+  );
+}
+
+export default Index;
