@@ -13,6 +13,7 @@ import {
 import styles from '~/styles/index.css'
 import Header from "~/components/Header";
 import Footer from "~/components/footer";
+import { useState } from "react";
 
 export function meta(){
   return (
@@ -55,9 +56,31 @@ export function links(){
 }
 
 export default function App() {
+  const [carrito, setCarrito] = useState([])
+
+  const agregarCarrito = guitarra => {
+    if(carrito.some(guitarraState => guitarraState.id === guitarra.id)){
+      const carritoActualizado = carrito.map( guitarraState => {
+        if(guitarraState.id === guitarra.id){
+          guitarraState.cantidad = guitarra.cantidad
+        }
+        return guitarraState
+      })
+      setCarrito(carritoActualizado)
+    }else{
+
+      setCarrito([...carrito, guitarra])
+    }
+  }
+
   return (
     <Document>
-      <Outlet />
+      <Outlet
+        context={{
+          agregarCarrito,
+          carrito
+        }}
+      />
     </Document>
   );
 }
